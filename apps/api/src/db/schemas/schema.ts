@@ -15,3 +15,4 @@ export * from "./lobbies.drizzle";
 export * from "./lobby-languages.drizzle";
 export * from "./lobby-members.drizzle";
 export * from "./game-distributors.drizzle";
+export * from "./achievements.drizzle";

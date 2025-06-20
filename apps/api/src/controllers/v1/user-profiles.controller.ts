@@ -7,6 +7,7 @@ import {
   updateUserProfileDto,
 } from "@repo/shared/dto/user-profile.dto";
 import { ApiError } from "../../middleware/errorHandler";
+import { AchievementTrackerService } from "../../services/achievement-tracker.service";
 
 function convertBigIntToString(obj: any): any {
   if (typeof obj === "bigint") {
@@ -136,6 +137,13 @@ export const updateUserProfile = async (c: Context) => {
     .where(eq(userProfiles.id, id))
     .returning();
   if (!user) throw new ApiError("User not found", 404);
+  
+  // Check if profile is complete and track achievement
+  const isProfileComplete = user.firstName && user.lastName && user.bio && user.birthDate;
+  if (isProfileComplete) {
+    await AchievementTrackerService.onProfileComplete(user.id);
+  }
+  
   const safeUser = convertBigIntToString(user);
   return c.json(
     {
